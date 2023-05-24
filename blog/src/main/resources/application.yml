@@ -2,7 +2,7 @@ server:
   port: 7777
 
 system:
-  cross-origin: http://localhost:8081
+  cross-origin: http://localhost:8080
 
 spring:
   datasource:
