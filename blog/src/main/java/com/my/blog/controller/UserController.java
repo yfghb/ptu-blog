@@ -1,5 +1,6 @@
 package com.my.blog.controller;
 
+import com.my.blog.annotation.SystemLog;
 import com.my.blog.domain.ResponseResult;
 import com.my.blog.domain.entity.User;
 import com.my.blog.enums.AppHttpCodeEnum;
@@ -32,6 +33,7 @@ public class UserController {
         return iUserService.logout();
     }
 
+    @SystemLog(businessName = "查询用户信息接口")
     @GetMapping("/user/userInfo")
     public ResponseResult getById(Long userId){
         User user = iUserService.getById(userId);
@@ -41,6 +43,7 @@ public class UserController {
         return ResponseResult.okResult(user);
     }
 
+    @SystemLog(businessName = "更新用户信息接口")
     @PutMapping("/user/userInfo")
     public ResponseResult updateUserInfo(@RequestBody User user){
         boolean b = iUserService.updateById(user);

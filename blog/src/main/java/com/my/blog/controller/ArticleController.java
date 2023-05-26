@@ -3,6 +3,7 @@ package com.my.blog.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.my.blog.annotation.SystemLog;
 import com.my.blog.constant.Status;
 import com.my.blog.domain.ResponseResult;
 import com.my.blog.domain.entity.Article;
@@ -91,6 +92,7 @@ public class ArticleController {
         return ResponseResult.okResult(vo);
     }
 
+    @SystemLog(businessName = "更新文章点击量接口")
     @PutMapping("/updateViewCount/{id}")
     public ResponseResult updateViewCount(@PathVariable Long id){
         return ResponseResult.okResult(iArticleService.updateViewCount(id));

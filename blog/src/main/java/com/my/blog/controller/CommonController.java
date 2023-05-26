@@ -1,5 +1,6 @@
 package com.my.blog.controller;
 
+import com.my.blog.annotation.SystemLog;
 import com.my.blog.domain.ResponseResult;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,6 +40,7 @@ public class CommonController {
      * @return 文件名
      * @throws IOException IOException
      */
+    @SystemLog(businessName = "文件上传接口")
     @PostMapping("/upload")
     public ResponseResult uploadFile(@NonNull MultipartFile multipartFile) throws IOException {
         String originalFilename = multipartFile.getOriginalFilename();

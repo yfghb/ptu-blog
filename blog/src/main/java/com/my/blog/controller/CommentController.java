@@ -3,6 +3,7 @@ package com.my.blog.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.my.blog.annotation.SystemLog;
 import com.my.blog.constant.CommentType;
 import com.my.blog.domain.ResponseResult;
 import com.my.blog.domain.entity.Comment;
@@ -30,6 +31,7 @@ public class CommentController {
     @Resource
     private ICommentService iCommentService;
 
+    @SystemLog(businessName = "获取友联页面的评论列表接口")
     @GetMapping("/linkCommentList")
     public ResponseResult linkCommentList(@NonNull Integer pageNum,
                                           @NonNull Integer pageSize,
@@ -38,6 +40,7 @@ public class CommentController {
         return ResponseResult.okResult(iCommentService.getComment(pageNum,pageSize,articleId, CommentType.LINK));
     }
 
+    @SystemLog(businessName = "获取文章页面的评论列表接口")
     @GetMapping("/commentList")
     public ResponseResult commentList(@NonNull Integer pageNum,
                                       @NonNull Integer pageSize,
