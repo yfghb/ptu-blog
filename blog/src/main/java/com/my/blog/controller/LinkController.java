@@ -14,12 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * <p>
- * 友链 前端控制器
- * </p>
- *
- * @author WH
- * @since 2023-05-16
+ * @author Yang Fan
+ * @since 2023/05/16 19:47
  */
 @RestController
 @RequestMapping("/link")
@@ -27,6 +23,10 @@ public class LinkController {
     @Resource
     private ILinkService iLinkService;
 
+    /**
+     * 查询友链
+     * @return ResponseResult
+     */
     @GetMapping("/getAllLink")
     public ResponseResult getAllLink(){
         List<Link> list = iLinkService.list();

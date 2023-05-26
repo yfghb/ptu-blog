@@ -9,30 +9,41 @@ import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
 
 /**
- * <p>
- * 用户表 前端控制器
- * </p>
- *
- * @author WH
- * @since 2023-05-16
+ * @author Yang Fan
+ * @since 2023/05/16 19:47
  */
 @RestController
 public class UserController {
     @Resource
     private IUserService iUserService;
 
+    /**
+     * 用户登录
+     * @param user 用户实体
+     * @return ResponseResult
+     */
     @PostMapping("/login")
     public ResponseResult login(@RequestBody User user){
         return iUserService.login(user);
     }
 
+    /**
+     * 用户登出
+     * @return ResponseResult
+     */
     @PostMapping("/logout")
     public ResponseResult logout(){
         return iUserService.logout();
     }
 
+    /**
+     * 查询用户信息接口
+     * @param userId 用户id
+     * @return ResponseResult
+     */
     @SystemLog(businessName = "查询用户信息接口")
     @GetMapping("/user/userInfo")
     public ResponseResult getById(Long userId){
@@ -43,9 +54,15 @@ public class UserController {
         return ResponseResult.okResult(user);
     }
 
+    /**
+     * 更新用户信息接口
+     * @param user 用户实体
+     * @return ResponseResult
+     */
     @SystemLog(businessName = "更新用户信息接口")
     @PutMapping("/user/userInfo")
     public ResponseResult updateUserInfo(@RequestBody User user){
+        user.setUpdateTime(LocalDateTime.now());
         boolean b = iUserService.updateById(user);
         if(!b){
             return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR,"更新异常");
@@ -53,8 +70,14 @@ public class UserController {
         return ResponseResult.okResult("更新成功");
     }
 
+    /**
+     * 新增用户
+     * @param user 用户实体
+     * @return ResponseResult
+     */
     @PostMapping("/user/register")
     public ResponseResult save(@RequestBody @NonNull User user){
+        user.setCreateTime(LocalDateTime.now());
         return ResponseResult.okResult(iUserService.save(user));
     }
 }

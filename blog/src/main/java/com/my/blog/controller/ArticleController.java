@@ -1,12 +1,12 @@
 package com.my.blog.controller;
 
-import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.my.blog.annotation.SystemLog;
 import com.my.blog.constant.Status;
 import com.my.blog.domain.ResponseResult;
 import com.my.blog.domain.entity.Article;
+import com.my.blog.domain.entity.Category;
 import com.my.blog.domain.vo.ArticleDetailVo;
 import com.my.blog.domain.vo.HotArticleVo;
 import com.my.blog.domain.vo.PageVo;
@@ -22,12 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * <p>
- * 文章表 前端控制器
- * </p>
- *
- * @author WH
- * @since 2023-05-16
+ * @author Yang Fan
+ * @since 2023/05/16 20:54
  */
 @RestController
 @RequestMapping("/article")
@@ -39,6 +35,10 @@ public class ArticleController {
     @Resource
     private ICategoryService iCategoryService;
 
+    /**
+     * 查询热点文章列表
+     * @return ResponseResult
+     */
     @GetMapping("/hotArticleList")
     public ResponseResult getHotArticleList(){
         List<HotArticleVo> voList = new ArrayList<>();
@@ -57,6 +57,13 @@ public class ArticleController {
         return ResponseResult.okResult(voList);
     }
 
+    /**
+     * 查询文章列表
+     * @param pageNum 当前页
+     * @param pageSize 一页显示的条数
+     * @param categoryId 类别id
+     * @return ResponseResult
+     */
     @GetMapping("/articleList")
     public ResponseResult page(@NonNull Integer pageNum,
                                @NonNull Integer pageSize,
@@ -82,19 +89,27 @@ public class ArticleController {
         return ResponseResult.okResult(pageVo);
     }
 
+    /**
+     * 以id获取文章
+     * @param id 文章id
+     * @return ResponseResult
+     */
     @GetMapping("/{id}")
-    public ResponseResult getArticleDetailById(@PathVariable Long id){
+    public ResponseResult getArticleDetailById(@PathVariable @NonNull Long id){
         Article article = iArticleService.getById(id);
         ArticleDetailVo vo = new ArticleDetailVo();
         BeanUtils.copyProperties(article,vo);
-        String name = iCategoryService.getById(article.getCategoryId()).getName();
-        vo.setCategoryName(name);
+        Category category = iCategoryService.getById(article.getCategoryId());
+        if(category!=null){
+            String name = category.getName();
+            vo.setCategoryName(name);
+        }
         return ResponseResult.okResult(vo);
     }
 
     @SystemLog(businessName = "更新文章点击量接口")
     @PutMapping("/updateViewCount/{id}")
-    public ResponseResult updateViewCount(@PathVariable Long id){
+    public ResponseResult updateViewCount(@PathVariable @NonNull Long id){
         return ResponseResult.okResult(iArticleService.updateViewCount(id));
     }
 }

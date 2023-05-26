@@ -15,12 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * <p>
- * 分类表 前端控制器
- * </p>
- *
- * @author WH
- * @since 2023-05-16
+ * @author Yang Fan
+ * @since 2023/05/16 19:51
  */
 @RestController
 @RequestMapping("/category")
@@ -29,6 +25,10 @@ public class CategoryController {
     @Resource
     private ICategoryService iCategoryService;
 
+    /**
+     * 查询分类列表
+     * @return ResponseResult
+     */
     @GetMapping("/getCategoryList")
     public ResponseResult getCategoryList(){
         List<CategoryVo> voList = new ArrayList<>();
