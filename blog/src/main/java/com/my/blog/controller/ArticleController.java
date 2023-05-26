@@ -62,7 +62,7 @@ public class ArticleController {
                                @NonNull Long categoryId){
         Page<Article> pageInit = new Page<>(pageNum,pageSize);
         LambdaQueryWrapper<Article> lqw = new LambdaQueryWrapper<>();
-        lqw.eq(Article::getCategoryId,categoryId)
+        lqw.eq(categoryId>0,Article::getCategoryId,categoryId)
                 .eq(Article::getStatus,Status.ARTICLE_STATUS_NORMAL)
                 .orderByDesc(Article::getIsTop);
         Page<Article> page = iArticleService.page(pageInit, lqw);
@@ -77,6 +77,7 @@ public class ArticleController {
         });
         pageVo.setRows(recordsVoList);
         pageVo.setTotal(page.getTotal());
+        pageVo.setLength(page.getSize());
         return ResponseResult.okResult(pageVo);
     }
 

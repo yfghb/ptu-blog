@@ -1,6 +1,5 @@
 package com.my.blog.config;
 
-import com.my.blog.filter.CORSFilter;
 import com.my.blog.filter.JwtAuthenticationTokenFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,8 +30,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Resource
     private AccessDeniedHandler accessDeniedHandler;
 
-    @Resource
-    private CORSFilter corsFilter;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -58,9 +55,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.addFilterBefore(jwtAuthenticationTokenFilter,
                 UsernamePasswordAuthenticationFilter.class);
 
-        http.addFilterBefore(corsFilter,UsernamePasswordAuthenticationFilter.class);
         //允许跨域
-        //http.cors();
+        http.cors();
     }
 
     @Override

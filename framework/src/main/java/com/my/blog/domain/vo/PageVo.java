@@ -12,5 +12,6 @@ import java.util.List;
 public class PageVo {
     private List<RecordsVo> rows;
     private Long total;
+    private Long length;
 }
 

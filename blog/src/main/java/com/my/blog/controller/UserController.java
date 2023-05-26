@@ -1,11 +1,9 @@
 package com.my.blog.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.my.blog.domain.ResponseResult;
 import com.my.blog.domain.entity.User;
 import com.my.blog.enums.AppHttpCodeEnum;
 import com.my.blog.service.IUserService;
-import com.my.blog.utils.JwtUtil;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 

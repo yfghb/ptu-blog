@@ -20,7 +20,7 @@
 
                 </h2>
                 <div class="ui label">
-                    <a :href="'#/Share?classId='+item.class_id">{{item.categoryName}}</a>
+                    <span>{{item.categoryName}}</span>
                 </div>
             </header>
             <div class="article-content">
