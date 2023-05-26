@@ -15,7 +15,7 @@
                             <span class="leftTitle">头像</span>
                             <el-upload
                               class="avatar-uploader"
-                              name="img"
+                              name="multipartFile"
                               :action="uploadURL"
                               :show-file-list="false"
                               :on-success="handleAvatarSuccess"

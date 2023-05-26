@@ -26,3 +26,6 @@ mybatis-plus:
       logic-not-delete-value: 0
       id-type: auto
 
+blog:
+  filePath: /ptu-blog-vue/static/img/
+  ptu-img: http://localhost:8081/static/img/
