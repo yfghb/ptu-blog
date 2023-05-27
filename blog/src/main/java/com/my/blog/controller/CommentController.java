@@ -62,7 +62,6 @@ public class CommentController {
      */
     @PostMapping
     public ResponseResult saveComment(@RequestBody Comment comment){
-        comment.setCreateTime(LocalDateTime.now());
         boolean b = iCommentService.save(comment);
         if(!b){
             return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR,"新增异常");

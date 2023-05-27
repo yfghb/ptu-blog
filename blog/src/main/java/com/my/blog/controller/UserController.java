@@ -62,7 +62,6 @@ public class UserController {
     @SystemLog(businessName = "更新用户信息接口")
     @PutMapping("/user/userInfo")
     public ResponseResult updateUserInfo(@RequestBody User user){
-        user.setUpdateTime(LocalDateTime.now());
         boolean b = iUserService.updateById(user);
         if(!b){
             return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR,"更新异常");
@@ -77,7 +76,6 @@ public class UserController {
      */
     @PostMapping("/user/register")
     public ResponseResult save(@RequestBody @NonNull User user){
-        user.setCreateTime(LocalDateTime.now());
         return ResponseResult.okResult(iUserService.save(user));
     }
 }

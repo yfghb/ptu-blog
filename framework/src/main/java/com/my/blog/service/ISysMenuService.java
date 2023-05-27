@@ -3,6 +3,8 @@ package com.my.blog.service;
 import com.my.blog.domain.entity.SysMenu;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.List;
+
 /**
  * <p>
  * 菜单权限表 服务类
@@ -12,5 +14,18 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2023-05-27
  */
 public interface ISysMenuService extends IService<SysMenu> {
+    /**
+     * 获取角色参数
+     * @param id 用户id
+     * @return List<String>
+     */
+    List<String> selectPermsByUserId(Long id);
+
+    /**
+     * 查询路由
+     * @param userId 用户id
+     * @return List<SysMenu>
+     */
+    List<SysMenu> selectRouterMenuTreeByUserId(Long userId);
 
 }
