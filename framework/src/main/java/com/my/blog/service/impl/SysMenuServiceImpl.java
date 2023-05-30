@@ -27,7 +27,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     SysMenuMapper menuMapper;
     @Override
     public List<String> selectPermsByUserId(Long id) {
-//如果是管理员，返回所有的权限
+        //如果是管理员，返回所有的权限
         if (id == 1L) {
             LambdaQueryWrapper<SysMenu> wrapper = new LambdaQueryWrapper<>();
             wrapper.in(SysMenu::getMenuType, SystemConstants.MENU,
@@ -39,23 +39,23 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
                     .collect(Collectors.toList());
             return perms;
         }
-//否则返回所具有的权限
+        //否则返回所具有的权限
         return menuMapper.selectPermsByUserId(id);
     }
 
     @Override
     public List<SysMenu> selectRouterMenuTreeByUserId(Long userId) {
         List<SysMenu> menus = null;
-//判断是否是管理员
+        //判断是否是管理员
         if(SecurityUtils.isAdmin()){
-//如果是，获取所有符合要求的Menu
+        //如果是，获取所有符合要求的Menu
             menus = menuMapper.selectAllRouterMenu();
         }else{
-//否则，获取当前用户所具有的Menu
+        //否则，获取当前用户所具有的Menu
             menus = menuMapper.selectRouterMenuTreeByUserId(userId);
         }
-//构建tree
-//先找出第一层的菜单，然后去找他们的子菜单设置到children属性中
+        //构建tree
+        //先找出第一层的菜单，然后去找他们的子菜单设置到children属性中
         List<SysMenu> menuTree = builderMenuTree(menus,0L);
         return menuTree;
     }

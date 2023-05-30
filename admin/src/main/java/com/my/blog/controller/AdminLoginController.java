@@ -47,7 +47,7 @@ public class AdminLoginController {
     @PostMapping("/user/login")
     public ResponseResult login(@RequestBody User user){
         if(!StringUtils.hasText(user.getUserName())){
-//提示 必须要传用户名
+            //必须要传用户名
             throw new SystemException(AppHttpCodeEnum.REQUIRE_USERNAME);
         }
         return iAdminLoginService.login(user);
@@ -69,18 +69,18 @@ public class AdminLoginController {
      */
     @GetMapping("/getInfo")
     public ResponseResult<AdminUserInfoVo> getInfo(){
-//获取当前登录的用户
+        //获取当前登录的用户
         LoginUser loginUser = SecurityUtils.getLoginUser();
-//根据用户id查询权限信息
+        //根据用户id查询权限信息
         List<String> perms =
                 iSysMenuService.selectPermsByUserId(loginUser.getUser().getId());
-//根据用户id查询角色信息
+        //根据用户id查询角色信息
         List<String> roleKeyList =
                 roleService.selectRoleKeyByUserId(loginUser.getUser().getId());
-//获取用户信息
+        //获取用户信息
         User user = loginUser.getUser();
         UserInfoVo userInfoVo = BeanCopyUtils.copyBean(user, UserInfoVo.class);
-//封装数据返回
+        //封装数据返回
         AdminUserInfoVo adminUserInfoVo = new
                 AdminUserInfoVo(perms,roleKeyList,userInfoVo);
         return ResponseResult.okResult(adminUserInfoVo);
@@ -93,9 +93,9 @@ public class AdminLoginController {
     @GetMapping("/getRouters")
     public ResponseResult<RoutersVo> getRouters(){
         Long userId = SecurityUtils.getUserId();
-//查询menu 结果是tree的形式
+        //查询menu 结果是tree的形式
         List<SysMenu> menus = iSysMenuService.selectRouterMenuTreeByUserId(userId);
-//封装数据返回
+        //封装数据返回
         return ResponseResult.okResult(new RoutersVo(menus));
     }
 
