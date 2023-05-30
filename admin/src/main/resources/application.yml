@@ -27,5 +27,5 @@ mybatis-plus:
       id-type: auto
 
 admin:
-  filePath: /ptu-admin-vue/static/img/
-  ptu-img: http://localhost:81/static/img/
+  filePath: /ptu-blog-vue/static/img/
+  ptu-img: http://localhost:8081/static/img/
