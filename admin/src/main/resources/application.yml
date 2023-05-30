@@ -25,3 +25,7 @@ mybatis-plus:
       logic-delete-value: 1
       logic-not-delete-value: 0
       id-type: auto
+
+admin:
+  filePath: /ptu-admin-vue/static/img/
+  ptu-img: http://localhost:81/static/img/
