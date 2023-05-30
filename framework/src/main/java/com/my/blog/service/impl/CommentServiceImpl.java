@@ -62,8 +62,12 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         List<CommentListVo> commentList = new ArrayList<>();
         BeanUtils.copyProperties(comment,vo);
         User user = userMapper.selectById(comment.getCreateBy());
-        if(user!=null){
+        if(user != null){
             vo.setUsername(user.getUserName());
+        }
+        if(comment.getToCommentUserId() != -1){
+            User u = userMapper.selectById(comment.getToCommentUserId());
+            vo.setToCommentUserName(u.getUserName());
         }
         LambdaQueryWrapper<Comment> lqw = new LambdaQueryWrapper<>();
         lqw.eq(Comment::getToCommentId,comment.getId());

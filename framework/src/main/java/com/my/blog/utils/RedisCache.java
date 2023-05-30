@@ -18,6 +18,17 @@ public class RedisCache
     public RedisTemplate redisTemplate;
 
     /**
+     * 对应缓存Map中特定key的值进行算数运算
+     * @param keyMap 需要操作Map缓存的key
+     * @param key Map中要被运算值对应的key
+     * @param val 运算值
+     */
+    public void addCacheMapValue(String keyMap, String key, Integer val) {
+        redisTemplate.opsForHash().increment(keyMap,key,val);
+    }
+
+
+    /**
      * 缓存基本的对象，Integer、String、实体类等
      *
      * @param key 缓存的键值

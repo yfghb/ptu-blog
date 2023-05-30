@@ -2,6 +2,7 @@ package com.my.blog.domain.vo;
 
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -17,5 +18,8 @@ public class CommentListVo {
     private Long id;
     private Long rootId;
     private Long toCommentId;
+    private Long toCommentUserId;
+    private String toCommentUserName;
     private String username;
+    private LocalDateTime createTime;
 }

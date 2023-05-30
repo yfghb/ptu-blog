@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -16,6 +18,8 @@ import java.time.LocalDateTime;
  * @author WH
  * @since 2023-05-16
  */
+@Data
+@NoArgsConstructor
 public class Article implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -97,144 +101,9 @@ public class Article implements Serializable {
      */
     private Integer delFlag;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
+    public Article(Long id, long viewCount) {
         this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public String getSummary() {
-        return summary;
-    }
-
-    public void setSummary(String summary) {
-        this.summary = summary;
-    }
-
-    public Long getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(Long categoryId) {
-        this.categoryId = categoryId;
-    }
-
-    public String getThumbnail() {
-        return thumbnail;
-    }
-
-    public void setThumbnail(String thumbnail) {
-        this.thumbnail = thumbnail;
-    }
-
-    public String getIsTop() {
-        return isTop;
-    }
-
-    public void setIsTop(String isTop) {
-        this.isTop = isTop;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public Long getViewCount() {
-        return viewCount;
-    }
-
-    public void setViewCount(Long viewCount) {
         this.viewCount = viewCount;
     }
 
-    public String getIsComment() {
-        return isComment;
-    }
-
-    public void setIsComment(String isComment) {
-        this.isComment = isComment;
-    }
-
-    public Long getCreateBy() {
-        return createBy;
-    }
-
-    public void setCreateBy(Long createBy) {
-        this.createBy = createBy;
-    }
-
-    public LocalDateTime getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(LocalDateTime createTime) {
-        this.createTime = createTime;
-    }
-
-    public Long getUpdateBy() {
-        return updateBy;
-    }
-
-    public void setUpdateBy(Long updateBy) {
-        this.updateBy = updateBy;
-    }
-
-    public LocalDateTime getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(LocalDateTime updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    public Integer getDelFlag() {
-        return delFlag;
-    }
-
-    public void setDelFlag(Integer delFlag) {
-        this.delFlag = delFlag;
-    }
-
-    @Override
-    public String toString() {
-        return "Article{" +
-            "id = " + id +
-            ", title = " + title +
-            ", content = " + content +
-            ", summary = " + summary +
-            ", categoryId = " + categoryId +
-            ", thumbnail = " + thumbnail +
-            ", isTop = " + isTop +
-            ", status = " + status +
-            ", viewCount = " + viewCount +
-            ", isComment = " + isComment +
-            ", createBy = " + createBy +
-            ", createTime = " + createTime +
-            ", updateBy = " + updateBy +
-            ", updateTime = " + updateTime +
-            ", delFlag = " + delFlag +
-        "}";
-    }
 }

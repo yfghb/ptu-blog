@@ -2,7 +2,9 @@ package com.my.blog.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.my.blog.domain.entity.Article;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Update;
+
 
 /**
  * <p>
@@ -13,11 +15,13 @@ import org.apache.ibatis.annotations.Update;
  * @since 2023-05-16
  */
 public interface ArticleMapper extends BaseMapper<Article> {
+
     /**
-     * 更新阅读人数
+     * 以id更新文章阅读量
+     * @param count 文章阅读量
      * @param id 文章id
      * @return Boolean
      */
-    @Update("update article set view_count = view_count + 1 where id = #{id}")
-    Boolean updateViewCount(Long id);
+    @Update("update article set view_count = #{count} where id = #{id}")
+    Boolean updateViewCountById(@Param(value = "id") Long id,@Param(value = "count") Long count);
 }

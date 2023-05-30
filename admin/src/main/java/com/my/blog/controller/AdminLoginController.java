@@ -53,12 +53,20 @@ public class AdminLoginController {
         return iAdminLoginService.login(user);
     }
 
+    /**
+     * 后台登出接口
+     * @return ResponseResult
+     */
     @PostMapping("/user/logout")
     public ResponseResult logout(){
         return iAdminLoginService.logout();
     }
 
 
+    /**
+     * 获取用户信息
+     * @return ResponseResult<AdminUserInfoVo>
+     */
     @GetMapping("/getInfo")
     public ResponseResult<AdminUserInfoVo> getInfo(){
 //获取当前登录的用户
@@ -78,6 +86,10 @@ public class AdminLoginController {
         return ResponseResult.okResult(adminUserInfoVo);
     }
 
+    /**
+     * 获取路由
+     * @return ResponseResult<RoutersVo>
+     */
     @GetMapping("/getRouters")
     public ResponseResult<RoutersVo> getRouters(){
         Long userId = SecurityUtils.getUserId();

@@ -13,6 +13,7 @@ import com.my.blog.domain.vo.PageVo;
 import com.my.blog.domain.vo.RecordsVo;
 import com.my.blog.service.IArticleService;
 import com.my.blog.service.ICategoryService;
+import com.my.blog.utils.RedisCache;
 import org.springframework.beans.BeanUtils;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
@@ -34,6 +35,9 @@ public class ArticleController {
 
     @Resource
     private ICategoryService iCategoryService;
+
+    @Resource
+    private RedisCache redisCache;
 
     /**
      * 查询热点文章列表
@@ -97,6 +101,10 @@ public class ArticleController {
     @GetMapping("/{id}")
     public ResponseResult getArticleDetailById(@PathVariable @NonNull Long id){
         Article article = iArticleService.getById(id);
+        // 从redis获取文章阅读量
+        Integer viewCount = redisCache.getCacheMapValue("viewCount", article.getId().toString());
+        article.setViewCount(viewCount.longValue());
+        // 拷贝到vo
         ArticleDetailVo vo = new ArticleDetailVo();
         BeanUtils.copyProperties(article,vo);
         Category category = iCategoryService.getById(article.getCategoryId());

@@ -1,6 +1,7 @@
 package com.my.blog.utils;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.stereotype.Component;
 
@@ -11,6 +12,7 @@ import java.time.LocalDateTime;
  * @author Yang Fan
  * @since 2023/5/27 17:23
  */
+@Slf4j
 @Component
 public class MyMetaObjectHandler implements MetaObjectHandler {
     @Override
@@ -19,7 +21,7 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
         try {
             userId = SecurityUtils.getUserId();
         }catch (Exception e){
-            e.printStackTrace();
+            log.error(e.getMessage());
             //表示是自己创建
             userId = -1L;
         }
