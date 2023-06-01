@@ -33,6 +33,9 @@ public class ITransactionServiceImpl implements ITransactionService {
     @Resource
     private ISysUserRoleService iSysUserRoleService;
 
+    @Resource
+    private ISysRoleService iSysRoleService;
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Boolean updateArticleAndArticleTag(Article article, List<ArticleTag> list) {
@@ -75,9 +78,14 @@ public class ITransactionServiceImpl implements ITransactionService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Boolean deleteUserAndRoles(Long id) {
+    public void deleteUserAndUserRoles(Long id) {
         iUserService.removeById(id);
         iSysUserRoleService.remove((new LambdaQueryWrapper<SysUserRole>()).eq(SysUserRole::getUserId,id));
-        return true;
+    }
+
+    @Override
+    public void deleteRoleAndUserRoles(Long id) {
+        iSysRoleService.removeById(id);
+        iSysUserRoleService.remove((new LambdaQueryWrapper<SysUserRole>()).eq(SysUserRole::getRoleId,id));
     }
 }

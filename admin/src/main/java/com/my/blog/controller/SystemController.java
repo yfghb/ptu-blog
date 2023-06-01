@@ -4,13 +4,14 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.my.blog.domain.ResponseResult;
+import com.my.blog.domain.entity.SysRole;
 import com.my.blog.domain.entity.SysUserRole;
 import com.my.blog.domain.entity.User;
 import com.my.blog.domain.vo.UserInfoVo;
 import com.my.blog.domain.vo.UserStatusVo;
 import com.my.blog.enums.AppHttpCodeEnum;
+import com.my.blog.service.ISysMenuService;
 import com.my.blog.service.ISysRoleService;
-import com.my.blog.service.ISysUserRoleService;
 import com.my.blog.service.ITransactionService;
 import com.my.blog.service.IUserService;
 import org.springframework.beans.BeanUtils;
@@ -41,6 +42,9 @@ public class SystemController {
 
     @Resource
     private PasswordEncoder passwordEncoder;
+
+    @Resource
+    private ISysMenuService iSysMenuService;
 
     /**
      * 用户分页查询
@@ -146,8 +150,97 @@ public class SystemController {
         String[] ids = idStr.split(",");
         for(String id:ids){
             Long userId = Long.parseLong(id);
-            iTransactionService.deleteUserAndRoles(userId);
+            iTransactionService.deleteUserAndUserRoles(userId);
         }
         return ResponseResult.okResult();
     }
+
+    /**
+     * 角色分页查询
+     * @param pageNum 当前页
+     * @param pageSize 一页显示的记录数
+     * @param roleName 角色名
+     * @param status 角色状态
+     * @return ResponseResult
+     */
+    @GetMapping("/role/list")
+    @PreAuthorize("@permissionServiceImpl.hasPermission('system:role:list')")
+    public ResponseResult getRolePage(@NonNull Integer pageNum,
+                                      @NonNull Integer pageSize,
+                                      String roleName,
+                                      Integer status){
+        LambdaQueryWrapper<SysRole> lqw = new LambdaQueryWrapper<>();
+        lqw.like(roleName!=null && !roleName.isEmpty(),SysRole::getRoleName,roleName)
+                .eq(status!=null,SysRole::getStatus,status)
+                .orderByAsc(SysRole::getRoleSort);
+        Page<SysRole> page = iSysRoleService.page(new Page<>(pageNum, pageSize), lqw);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("rows",page.getRecords());
+        jsonObject.put("total",page.getTotal());
+        jsonObject.put("length",page.getSize());
+        return ResponseResult.okResult(jsonObject);
+    }
+
+    /**
+     * 删除角色以及用户角色记录
+     * @param idStr 角色id字符串("1,2,3...")
+     * @return ResponseResult
+     */
+    @DeleteMapping("/role/{idStr}")
+    @PreAuthorize("@permissionServiceImpl.hasPermission('system:role:remove')")
+    public ResponseResult deleteRole(@PathVariable @NonNull String idStr){
+        String[] ids = idStr.split(",");
+        for(String id:ids){
+            Long roleId = Long.parseLong(id);
+            iTransactionService.deleteRoleAndUserRoles(roleId);
+        }
+        return ResponseResult.okResult();
+    }
+
+    /**
+     * 新增角色
+     * @param sysRole SysRole实体
+     * @return ResponseResult
+     */
+    @PostMapping("/role")
+    @PreAuthorize("@permissionServiceImpl.hasPermission('system:role:add')")
+    public ResponseResult saveRole(@RequestBody SysRole sysRole){
+        return ResponseResult.okResult(iSysRoleService.save(sysRole));
+    }
+
+    /**
+     * 以id查询角色
+     * @param id 角色id
+     * @return ResponseResult
+     */
+    @GetMapping("/role/{id}")
+    @PreAuthorize("@permissionServiceImpl.hasPermission('system:role:query')")
+    public ResponseResult getRoleById(@PathVariable @NonNull Long id){
+        return ResponseResult.okResult(iSysRoleService.getById(id));
+    }
+
+    /**
+     * 以id获取树形权限列表
+     * @return ResponseResult
+     */
+    @GetMapping("/menu/roleMenuTreeselect/{id}")
+    @PreAuthorize("@permissionServiceImpl.hasPermission('system:role:edit')")
+    public ResponseResult treeSelect(@PathVariable @NonNull Long id){
+        return ResponseResult.okResult(iSysMenuService.selectRouterMenuTreeByUserId(id));
+    }
+
+
+
+    /**
+     * 获取树形权限列表
+     * @return ResponseResult
+     */
+    @GetMapping("/menu/treeselect")
+    @PreAuthorize("@permissionServiceImpl.hasPermission('system:role:add')")
+    public ResponseResult treeSelect(){
+        List<String> list = iSysMenuService.selectPermsByUserId(1L);
+        
+        return ResponseResult.okResult();
+    }
+
 }

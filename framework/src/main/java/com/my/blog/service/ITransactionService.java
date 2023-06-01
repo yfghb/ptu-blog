@@ -53,7 +53,12 @@ public interface ITransactionService {
     /**
      * 删除用户和权限记录
      * @param id 用户id
-     * @return Boolean
      */
-    Boolean deleteUserAndRoles(Long id);
+    void deleteUserAndUserRoles(Long id);
+
+    /**
+     * 删除角色以及用户角色记录
+     * @param id 角色id
+     */
+    void deleteRoleAndUserRoles(Long id);
 }
