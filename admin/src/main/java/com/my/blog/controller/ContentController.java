@@ -6,10 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.my.blog.constant.DelFlag;
 import com.my.blog.constant.Status;
 import com.my.blog.domain.ResponseResult;
-import com.my.blog.domain.entity.Article;
-import com.my.blog.domain.entity.ArticleTag;
-import com.my.blog.domain.entity.Category;
-import com.my.blog.domain.entity.Tag;
+import com.my.blog.domain.entity.*;
 import com.my.blog.domain.vo.*;
 import com.my.blog.enums.AppHttpCodeEnum;
 import com.my.blog.service.*;
@@ -44,6 +41,9 @@ public class ContentController {
 
     @Resource
     private ITransactionService iTransactionService;
+
+    @Resource
+    private ILinkService iLinkService;
 
     @GetMapping("/tag/listAllTag")
     public ResponseResult listAllTag(){
@@ -158,6 +158,31 @@ public class ContentController {
     }
 
     /**
+     * 友联分页查询
+     * @param pageNum 当前页
+     * @param pageSize 一页显示的记录数
+     * @param name 分类名称
+     * @param status 状态
+     * @return
+     */
+    @GetMapping("/link/list")
+    @PreAuthorize("@permissionServiceImpl.hasPermission('content:link:list')")
+    public ResponseResult getLinkPage(@NonNull Integer pageNum,
+                                      @NonNull Integer pageSize,
+                                      String name,
+                                      Integer status){
+        LambdaQueryWrapper<Link> lqw = new LambdaQueryWrapper<>();
+        lqw.like(name!=null && !name.isEmpty(),Link::getName,name);
+        lqw.eq(status!=null,Link::getStatus,status);
+        Page<Link> page = iLinkService.page(new Page<>(pageNum, pageSize), lqw);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("rows",page.getRecords());
+        jsonObject.put("total",page.getTotal());
+        jsonObject.put("length",page.getSize());
+        return ResponseResult.okResult(jsonObject);
+    }
+
+    /**
      * 以id查询文章
      * @param id 文章id
      * @return ResponseResult
@@ -180,6 +205,28 @@ public class ContentController {
     }
 
     /**
+     * 以id查询类别
+     * @param id 分类id
+     * @return ResponseResult
+     */
+    @GetMapping("/category/{id}")
+    @PreAuthorize("@permissionServiceImpl.hasPermission('content:category:list')")
+    public ResponseResult getCategoryById(@PathVariable @NonNull Long id){
+        return ResponseResult.okResult(iCategoryService.getById(id));
+    }
+
+    /**
+     * 以id查询标签
+     * @param id 标签id
+     * @return ResponseResult
+     */
+    @GetMapping("/tag/{id}")
+    @PreAuthorize("@permissionServiceImpl.hasPermission('content:tag:index')")
+    public ResponseResult getTagById(@PathVariable @NonNull Long id){
+        return ResponseResult.okResult(iTagService.getById(id));
+    }
+
+    /**
      * 修改文章
      * @param articleDetailVo articleDetailVo
      * @return ResponseResult
@@ -199,11 +246,85 @@ public class ContentController {
             articleTag.setTagId(tagId);
             list.add(articleTag);
         });
-        // 保存到数据库
-        boolean flag = iTransactionService.updateArticleAndArticleTag(article, list);
-        if(!flag){
-            return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR,"保存事务失败！");
-        }
-        return ResponseResult.okResult();
+        return ResponseResult.okResult(iTransactionService.updateArticleAndArticleTag(article, list));
     }
+
+    /**
+     * 修改分类
+     * @param category category实体
+     * @return ResponseResult
+     */
+    @PutMapping("/category")
+    @PreAuthorize("@permissionServiceImpl.hasPermission('content:category:list')")
+    public ResponseResult updateCategory(@RequestBody @NonNull Category category){
+        return ResponseResult.okResult(iCategoryService.updateById(category));
+    }
+
+    /**
+     * 修改标签
+     * @param tag 标签实体
+     * @return ResponseResult
+     */
+    @PutMapping("/tag")
+    @PreAuthorize("@permissionServiceImpl.hasPermission('content:tag:index')")
+    public ResponseResult updateTag(@RequestBody @NonNull Tag tag){
+        return ResponseResult.okResult(iTagService.updateById(tag));
+    }
+
+    /**
+     * 删除文章
+     * @param id 文章id
+     * @return ResponseResult
+     */
+    @DeleteMapping("/article/{id}")
+    @PreAuthorize("@permissionServiceImpl.hasPermission('content:article:list')")
+    public ResponseResult deleteArticleById(@PathVariable @NonNull Long id){
+        return ResponseResult.okResult(iTransactionService.deleteArticleAndArticleTag(id));
+    }
+
+    /**
+     * 以id删除类别
+     * @param id 分类id
+     * @return ResponseResult
+     */
+    @DeleteMapping("/category/{id}")
+    @PreAuthorize("@permissionServiceImpl.hasPermission('content:category:list')")
+    public ResponseResult deleteCategoryById(@PathVariable @NonNull Long id){
+        return ResponseResult.okResult(iCategoryService.removeById(id));
+    }
+
+    /**
+     * 以id删除标签
+     * @param id 标签id
+     * @return ResponseResult
+     */
+    @DeleteMapping("/tag/{id}")
+    @PreAuthorize("@permissionServiceImpl.hasPermission('content:tag:index')")
+    public ResponseResult deleteTagById(@PathVariable @NonNull Long id){
+        return ResponseResult.okResult(iTransactionService.deleteTagAndArticleTag(id));
+    }
+
+    /**
+     * 新增分类
+     * @param category 分类实体
+     * @return ResponseResult
+     */
+    @PostMapping("/category")
+    @PreAuthorize("@permissionServiceImpl.hasPermission('content:category:list')")
+    public ResponseResult saveCategory(@RequestBody Category category){
+        return ResponseResult.okResult(iCategoryService.save(category));
+    }
+
+    /**
+     * 新增标签
+     * @param tag 标签实体
+     * @return ResponseResult
+     */
+    @PostMapping("/tag")
+    @PreAuthorize("@permissionServiceImpl.hasPermission('content:tag:index')")
+    public ResponseResult saveTag(@RequestBody Tag tag){
+        return ResponseResult.okResult(iTagService.save(tag));
+    }
+
+
 }

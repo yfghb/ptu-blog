@@ -17,4 +17,18 @@ public interface ITransactionService {
      * @return Boolean
      */
     Boolean updateArticleAndArticleTag(Article article, List<ArticleTag> list);
+
+    /**
+     * 事务删除tag以及articleTag
+     * @param id tagId
+     * @return Boolean
+     */
+    Boolean deleteTagAndArticleTag(Long id);
+
+    /**
+     * 事务删除article以及articleTag
+     * @param id articleId
+     * @return Boolean
+     */
+    Boolean deleteArticleAndArticleTag(Long id);
 }
