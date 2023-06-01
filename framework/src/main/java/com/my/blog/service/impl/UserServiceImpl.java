@@ -39,6 +39,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     @Resource
     private RedisCache redisCache;
 
+    @Resource
+    private UserMapper userMapper;
+
 
     @Override
     public ResponseResult login(User user) {
@@ -75,6 +78,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         redisCache.deleteObject("bloglogin:"+userId);
         return ResponseResult.okResult();
 
+    }
+
+    @Override
+    public Boolean updateUserStatus(Long id, Integer status) {
+        return userMapper.updateUserStatus(id,status);
     }
 
 

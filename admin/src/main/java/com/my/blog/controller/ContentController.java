@@ -4,11 +4,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.my.blog.constant.DelFlag;
-import com.my.blog.constant.Status;
 import com.my.blog.domain.ResponseResult;
 import com.my.blog.domain.entity.*;
 import com.my.blog.domain.vo.*;
-import com.my.blog.enums.AppHttpCodeEnum;
 import com.my.blog.service.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.lang.NonNull;
@@ -92,7 +90,6 @@ public class ContentController {
         LambdaQueryWrapper<Article> lqw = new LambdaQueryWrapper<>();
         lqw.like(title!=null && !title.isEmpty(),Article::getTitle,title);
         lqw.like(summary!=null && !summary.isEmpty(),Article::getSummary,summary);
-        lqw.eq(Article::getStatus, Status.ARTICLE_STATUS_NORMAL);
         // 分页查询
         Page<Article> page = new Page<>(pageNum,pageSize);
         Page<Article> articlePage = iArticleService.page(page, lqw);
@@ -326,5 +323,27 @@ public class ContentController {
         return ResponseResult.okResult(iTagService.save(tag));
     }
 
+    /**
+     * 新增文章
+     * @param vo ArticleDetailVo
+     * @return ResponseResult
+     */
+    @PostMapping("/article")
+    @PreAuthorize("@permissionServiceImpl.hasPermission('content:article:writer')")
+    public ResponseResult saveArticle(@RequestBody @NonNull ArticleDetailVo vo){
+        Article article = new Article();
+        // 拷贝属性
+        BeanUtils.copyProperties(vo,article);
+        article.setId(System.currentTimeMillis());
+        List<ArticleTag> list = new ArrayList<>();
+        vo.getTags().forEach(tagId->{
+            ArticleTag articleTag = new ArticleTag();
+            articleTag.setTagId(tagId);
+            articleTag.setArticleId(article.getId());
+            list.add(articleTag);
+        });
+        // 保存到数据库
+        return ResponseResult.okResult(iTransactionService.saveArticleAndArticleTag(article,list));
+    }
 
 }

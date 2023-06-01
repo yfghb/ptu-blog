@@ -2,6 +2,8 @@ package com.my.blog.service;
 
 import com.my.blog.domain.entity.Article;
 import com.my.blog.domain.entity.ArticleTag;
+import com.my.blog.domain.entity.SysUserRole;
+import com.my.blog.domain.entity.User;
 
 import java.util.List;
 
@@ -11,12 +13,20 @@ import java.util.List;
  */
 public interface ITransactionService {
     /**
-     * 文章表和文章标签中间表事务保存
+     * 文章表和文章标签中间表事务更新
      * @param article article实体
      * @param list ArticleTag列表
      * @return Boolean
      */
     Boolean updateArticleAndArticleTag(Article article, List<ArticleTag> list);
+
+    /**
+     * 文章表和文章标签中间表事务保存
+     * @param article article实体
+     * @param list ArticleTag列表
+     * @return Boolean
+     */
+    Boolean saveArticleAndArticleTag(Article article, List<ArticleTag> list);
 
     /**
      * 事务删除tag以及articleTag
@@ -31,4 +41,19 @@ public interface ITransactionService {
      * @return Boolean
      */
     Boolean deleteArticleAndArticleTag(Long id);
+
+    /**
+     * 事务保存用户及角色
+     * @param user 用户实体
+     * @param list 角色列表
+     * @return Boolean
+     */
+    Boolean saveUserAndRoles(User user, List<SysUserRole> list);
+
+    /**
+     * 删除用户和权限记录
+     * @param id 用户id
+     * @return Boolean
+     */
+    Boolean deleteUserAndRoles(Long id);
 }

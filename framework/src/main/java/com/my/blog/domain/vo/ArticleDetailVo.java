@@ -14,6 +14,7 @@ public class ArticleDetailVo {
     private Long categoryId;
     private String categoryName;
     private String content;
+    private String thumbnail;
     private String summary;
     private LocalDateTime createTime;
     private Long id;

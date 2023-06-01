@@ -27,5 +27,12 @@ public interface IUserService extends IService<User> {
      */
     ResponseResult logout();
 
+    /**
+     * 改变用户的可用状态
+     * @param id 用户id
+     * @param status 状态值
+     * @return Boolean
+     */
+    Boolean updateUserStatus(Long id,Integer status);
 
 }

@@ -3,10 +3,9 @@ package com.my.blog.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.my.blog.domain.entity.Article;
 import com.my.blog.domain.entity.ArticleTag;
-import com.my.blog.service.IArticleService;
-import com.my.blog.service.IArticleTagService;
-import com.my.blog.service.ITagService;
-import com.my.blog.service.ITransactionService;
+import com.my.blog.domain.entity.SysUserRole;
+import com.my.blog.domain.entity.User;
+import com.my.blog.service.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,18 +19,32 @@ import java.util.List;
 @Service
 public class ITransactionServiceImpl implements ITransactionService {
     @Resource
-    IArticleService iArticleService;
+    private IArticleService iArticleService;
 
     @Resource
-    IArticleTagService iArticleTagService;
+    private IArticleTagService iArticleTagService;
 
     @Resource
-    ITagService iTagService;
+    private ITagService iTagService;
+
+    @Resource
+    private IUserService iUserService;
+
+    @Resource
+    private ISysUserRoleService iSysUserRoleService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Boolean updateArticleAndArticleTag(Article article, List<ArticleTag> list) {
         iArticleService.updateById(article);
+        iArticleTagService.saveBatch(list);
+        return true;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean saveArticleAndArticleTag(Article article, List<ArticleTag> list) {
+        iArticleService.save(article);
         iArticleTagService.saveBatch(list);
         return true;
     }
@@ -45,9 +58,26 @@ public class ITransactionServiceImpl implements ITransactionService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Boolean deleteArticleAndArticleTag(Long id) {
         iArticleService.removeById(id);
         iArticleTagService.remove((new LambdaQueryWrapper<ArticleTag>()).eq(ArticleTag::getArticleId,id));
+        return true;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean saveUserAndRoles(User user, List<SysUserRole> list) {
+        iUserService.save(user);
+        iSysUserRoleService.saveBatch(list);
+        return true;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean deleteUserAndRoles(Long id) {
+        iUserService.removeById(id);
+        iSysUserRoleService.remove((new LambdaQueryWrapper<SysUserRole>()).eq(SysUserRole::getUserId,id));
         return true;
     }
 }
