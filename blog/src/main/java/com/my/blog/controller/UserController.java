@@ -6,6 +6,7 @@ import com.my.blog.domain.entity.User;
 import com.my.blog.enums.AppHttpCodeEnum;
 import com.my.blog.service.IUserService;
 import org.springframework.lang.NonNull;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -19,6 +20,10 @@ import java.time.LocalDateTime;
 public class UserController {
     @Resource
     private IUserService iUserService;
+
+    @Resource
+    private PasswordEncoder passwordEncoder;
+
 
     /**
      * 用户登录
@@ -76,6 +81,8 @@ public class UserController {
      */
     @PostMapping("/user/register")
     public ResponseResult save(@RequestBody @NonNull User user){
+        String encodePassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(encodePassword);
         return ResponseResult.okResult(iUserService.save(user));
     }
 }
