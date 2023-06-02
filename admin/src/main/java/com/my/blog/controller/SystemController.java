@@ -1,12 +1,15 @@
 package com.my.blog.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.my.blog.domain.ResponseResult;
 import com.my.blog.domain.entity.SysRole;
+import com.my.blog.domain.entity.SysRoleMenu;
 import com.my.blog.domain.entity.SysUserRole;
 import com.my.blog.domain.entity.User;
+import com.my.blog.domain.vo.SysRoleVo;
 import com.my.blog.domain.vo.UserInfoVo;
 import com.my.blog.domain.vo.UserStatusVo;
 import com.my.blog.enums.AppHttpCodeEnum;
@@ -199,13 +202,23 @@ public class SystemController {
 
     /**
      * 新增角色
-     * @param sysRole SysRole实体
+     * @param vo SysRoleVo
      * @return ResponseResult
      */
     @PostMapping("/role")
     @PreAuthorize("@permissionServiceImpl.hasPermission('system:role:add')")
-    public ResponseResult saveRole(@RequestBody SysRole sysRole){
-        return ResponseResult.okResult(iSysRoleService.save(sysRole));
+    public ResponseResult saveRole(@RequestBody SysRoleVo vo){
+        SysRole sysRole = new SysRole();
+        BeanUtils.copyProperties(vo,sysRole);
+        sysRole.setId(System.currentTimeMillis());
+        List<SysRoleMenu> list = new ArrayList<>();
+        vo.getMenuIds().forEach(menuId->{
+            SysRoleMenu sysRoleMenu = new SysRoleMenu();
+            sysRoleMenu.setRoleId(sysRole.getId());
+            sysRoleMenu.setMenuId(menuId);
+            list.add(sysRoleMenu);
+        });
+        return ResponseResult.okResult(iTransactionService.saveRoleAndRoleMenu(sysRole,list));
     }
 
     /**
@@ -220,13 +233,13 @@ public class SystemController {
     }
 
     /**
-     * 以id获取树形权限列表
+     * 以id获取树形菜单列表
      * @return ResponseResult
      */
     @GetMapping("/menu/roleMenuTreeselect/{id}")
     @PreAuthorize("@permissionServiceImpl.hasPermission('system:role:edit')")
     public ResponseResult treeSelect(@PathVariable @NonNull Long id){
-        return ResponseResult.okResult(iSysMenuService.selectRouterMenuTreeByUserId(id));
+        return ResponseResult.okResult(iSysMenuService.getTreeMenuByUserId(id));
     }
 
 
@@ -238,9 +251,7 @@ public class SystemController {
     @GetMapping("/menu/treeselect")
     @PreAuthorize("@permissionServiceImpl.hasPermission('system:role:add')")
     public ResponseResult treeSelect(){
-        List<String> list = iSysMenuService.selectPermsByUserId(1L);
-        
-        return ResponseResult.okResult();
+        return ResponseResult.okResult(iSysMenuService.getTreeMenuByUserId(1L).getMenus());
     }
 
 }

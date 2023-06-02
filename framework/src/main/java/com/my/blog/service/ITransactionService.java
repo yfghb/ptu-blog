@@ -1,9 +1,7 @@
 package com.my.blog.service;
 
-import com.my.blog.domain.entity.Article;
-import com.my.blog.domain.entity.ArticleTag;
-import com.my.blog.domain.entity.SysUserRole;
-import com.my.blog.domain.entity.User;
+import com.my.blog.domain.entity.*;
+import com.my.blog.domain.vo.SysRoleVo;
 
 import java.util.List;
 
@@ -49,6 +47,14 @@ public interface ITransactionService {
      * @return Boolean
      */
     Boolean saveUserAndRoles(User user, List<SysUserRole> list);
+
+    /**
+     * 事务保存角色以及角色菜单记录
+     * @param sysRole SysRole
+     * @param list List<SysRoleMenu>
+     * @return Boolean
+     */
+    Boolean saveRoleAndRoleMenu(SysRole sysRole,List<SysRoleMenu> list);
 
     /**
      * 删除用户和权限记录

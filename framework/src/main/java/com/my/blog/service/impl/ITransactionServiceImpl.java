@@ -1,10 +1,7 @@
 package com.my.blog.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.my.blog.domain.entity.Article;
-import com.my.blog.domain.entity.ArticleTag;
-import com.my.blog.domain.entity.SysUserRole;
-import com.my.blog.domain.entity.User;
+import com.my.blog.domain.entity.*;
 import com.my.blog.service.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,6 +32,9 @@ public class ITransactionServiceImpl implements ITransactionService {
 
     @Resource
     private ISysRoleService iSysRoleService;
+
+    @Resource
+    private ISysRoleMenuService iSysRoleMenuService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -73,6 +73,14 @@ public class ITransactionServiceImpl implements ITransactionService {
     public Boolean saveUserAndRoles(User user, List<SysUserRole> list) {
         iUserService.save(user);
         iSysUserRoleService.saveBatch(list);
+        return true;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean saveRoleAndRoleMenu(SysRole sysRole,List<SysRoleMenu> list) {
+        iSysRoleService.save(sysRole);
+        iSysRoleMenuService.saveBatch(list);
         return true;
     }
 

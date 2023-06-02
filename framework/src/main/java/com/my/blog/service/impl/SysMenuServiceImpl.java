@@ -4,13 +4,18 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.my.blog.constant.SystemConstants;
 import com.my.blog.dao.SysMenuMapper;
 import com.my.blog.domain.entity.SysMenu;
+import com.my.blog.domain.entity.SysRoleMenu;
+import com.my.blog.domain.entity.SysUserRole;
+import com.my.blog.domain.vo.TreeMenuVo;
 import com.my.blog.service.ISysMenuService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.my.blog.service.ISysRoleMenuService;
+import com.my.blog.service.ISysUserRoleService;
 import com.my.blog.utils.SecurityUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -25,6 +30,13 @@ import java.util.stream.Collectors;
 public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> implements ISysMenuService {
     @Resource
     SysMenuMapper menuMapper;
+
+    @Resource
+    ISysUserRoleService iSysUserRoleService;
+
+    @Resource
+    ISysRoleMenuService iSysRoleMenuService;
+
     @Override
     public List<String> selectPermsByUserId(Long id) {
         //如果是管理员，返回所有的权限
@@ -59,6 +71,41 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
         List<SysMenu> menuTree = builderMenuTree(menus,0L);
         return menuTree;
     }
+
+    @Override
+    public TreeMenuVo getTreeMenuByUserId(Long userId) {
+        List<Long> checkedKeys = new ArrayList<>();
+        if(userId==1L){
+            List<SysMenu> menus = menuMapper.selectList((new LambdaQueryWrapper<SysMenu>()).eq(SysMenu::getStatus,0));
+            menus.forEach(menu->checkedKeys.add(menu.getId()));
+        }else {
+            List<SysUserRole> userRoles = iSysUserRoleService.list((new LambdaQueryWrapper<SysUserRole>()).eq(SysUserRole::getUserId,userId));
+            Set<SysRoleMenu> roleMenus = new HashSet<>();
+            userRoles.forEach(sysUserRole -> {
+                List<SysRoleMenu> list = iSysRoleMenuService.list((new LambdaQueryWrapper<SysRoleMenu>())
+                        .eq(SysRoleMenu::getRoleId,sysUserRole.getRoleId()));
+                roleMenus.addAll(list);
+            });
+            roleMenus.forEach(sysRoleMenu -> {
+                checkedKeys.add(sysRoleMenu.getMenuId());
+            });
+        }
+        TreeMenuVo vo = new TreeMenuVo();
+        vo.setCheckedKeys(checkedKeys);
+        vo.setMenus(getTreeMenu());
+        return vo;
+    }
+
+    private List<SysMenu> getTreeMenu(){
+        LambdaQueryWrapper<SysMenu> lqw = new LambdaQueryWrapper<>();
+        lqw.eq(SysMenu::getStatus,0)
+                .orderByAsc(SysMenu::getOrderNum);
+        List<SysMenu> menus = menuMapper.selectList(lqw);
+        List<SysMenu> menuTree = builderMenuTree(menus,0L);
+        return menuTree;
+    }
+
+
     private List<SysMenu> builderMenuTree(List<SysMenu> menus, Long parentId) {
         List<SysMenu> menuTree = menus.stream()
                 .filter(menu -> menu.getParentId().equals(parentId))
@@ -73,4 +120,6 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
                 .collect(Collectors.toList());
         return childrenList;
     }
+
+
 }

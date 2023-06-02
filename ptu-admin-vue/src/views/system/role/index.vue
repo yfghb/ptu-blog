@@ -240,7 +240,7 @@ export default {
       form: {},
       defaultProps: {
         children: 'children',
-        label: 'label'
+        label: 'menuName'
       },
       // 表单校验
       rules: {

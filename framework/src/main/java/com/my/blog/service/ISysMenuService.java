@@ -2,6 +2,7 @@ package com.my.blog.service;
 
 import com.my.blog.domain.entity.SysMenu;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.my.blog.domain.vo.TreeMenuVo;
 
 import java.util.List;
 
@@ -28,4 +29,10 @@ public interface ISysMenuService extends IService<SysMenu> {
      */
     List<SysMenu> selectRouterMenuTreeByUserId(Long userId);
 
+    /**
+     * 获取树形菜单
+     * @param userId
+     * @return
+     */
+    TreeMenuVo getTreeMenuByUserId(Long userId);
 }
