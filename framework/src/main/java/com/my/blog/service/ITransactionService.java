@@ -57,14 +57,22 @@ public interface ITransactionService {
     Boolean saveRoleAndRoleMenu(SysRole sysRole,List<SysRoleMenu> list);
 
     /**
-     * 删除用户和权限记录
+     * 事务删除用户和权限记录
      * @param id 用户id
      */
     void deleteUserAndUserRoles(Long id);
 
     /**
-     * 删除角色以及用户角色记录
+     * 事务删除角色以及用户角色记录
      * @param id 角色id
      */
     void deleteRoleAndUserRoles(Long id);
+
+    /**
+     * 事务更新角色以及角色菜单记录
+     * @param sysRole SysRole
+     * @param list List<SysRoleMenu>
+     * @return Boolean
+     */
+    Boolean updateRoleAndRoleMenu(SysRole sysRole,List<SysRoleMenu> list);
 }

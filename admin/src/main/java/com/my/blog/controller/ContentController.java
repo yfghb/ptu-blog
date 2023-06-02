@@ -234,8 +234,6 @@ public class ContentController {
         Article article = new Article();
         BeanUtils.copyProperties(articleDetailVo,article);
         List<Long> tags = articleDetailVo.getTags();
-        // 先删除原来的标签
-        iArticleTagService.remove((new LambdaQueryWrapper<ArticleTag>()).eq(ArticleTag::getArticleId,article.getId()));
         List<ArticleTag> list = new ArrayList<>();
         tags.forEach(tagId->{
             ArticleTag articleTag = new ArticleTag();

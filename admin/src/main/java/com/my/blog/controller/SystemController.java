@@ -254,4 +254,27 @@ public class SystemController {
         return ResponseResult.okResult(iSysMenuService.getTreeMenuByUserId(1L).getMenus());
     }
 
+    /**
+     * 更新角色以及角色菜单记录
+     * @param vo SysRoleVo
+     * @return ResponseResult
+     */
+    @PutMapping("/role")
+    @PreAuthorize("@permissionServiceImpl.hasPermission('system:role:edit')")
+    public ResponseResult updateRole(@RequestBody @NonNull SysRoleVo vo){
+        SysRole sysRole = new SysRole();
+        BeanUtils.copyProperties(vo,sysRole);
+        if(sysRole.getId()==null){
+            return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR,"角色id不能为空");
+        }
+        List<SysRoleMenu> list = new ArrayList<>();
+        vo.getMenuIds().forEach(menuId->{
+            SysRoleMenu sysRoleMenu = new SysRoleMenu();
+            sysRoleMenu.setRoleId(sysRole.getId());
+            sysRoleMenu.setMenuId(menuId);
+            list.add(sysRoleMenu);
+        });
+        return ResponseResult.okResult(iTransactionService.updateRoleAndRoleMenu(sysRole,list));
+    }
+
 }

@@ -39,6 +39,9 @@ public class ITransactionServiceImpl implements ITransactionService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Boolean updateArticleAndArticleTag(Article article, List<ArticleTag> list) {
+        // 先删除原来的记录
+        iArticleTagService.remove((new LambdaQueryWrapper<ArticleTag>())
+                .eq(ArticleTag::getArticleId,article.getId()));
         iArticleService.updateById(article);
         iArticleTagService.saveBatch(list);
         return true;
@@ -92,8 +95,20 @@ public class ITransactionServiceImpl implements ITransactionService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void deleteRoleAndUserRoles(Long id) {
         iSysRoleService.removeById(id);
         iSysUserRoleService.remove((new LambdaQueryWrapper<SysUserRole>()).eq(SysUserRole::getRoleId,id));
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean updateRoleAndRoleMenu(SysRole sysRole, List<SysRoleMenu> list) {
+        // 把原来菜单权限的删掉
+        iSysRoleMenuService.remove((new LambdaQueryWrapper<SysRoleMenu>())
+                .eq(SysRoleMenu::getRoleId,sysRole.getId()));
+        iSysRoleService.updateById(sysRole);
+        iSysRoleMenuService.saveBatch(list);
+        return true;
     }
 }

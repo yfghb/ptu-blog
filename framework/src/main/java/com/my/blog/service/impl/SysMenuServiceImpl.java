@@ -73,22 +73,14 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     }
 
     @Override
-    public TreeMenuVo getTreeMenuByUserId(Long userId) {
+    public TreeMenuVo getTreeMenuByUserId(Long roleId) {
         List<Long> checkedKeys = new ArrayList<>();
-        if(userId==1L){
+        if(roleId==1L){
             List<SysMenu> menus = menuMapper.selectList((new LambdaQueryWrapper<SysMenu>()).eq(SysMenu::getStatus,0));
             menus.forEach(menu->checkedKeys.add(menu.getId()));
         }else {
-            List<SysUserRole> userRoles = iSysUserRoleService.list((new LambdaQueryWrapper<SysUserRole>()).eq(SysUserRole::getUserId,userId));
-            Set<SysRoleMenu> roleMenus = new HashSet<>();
-            userRoles.forEach(sysUserRole -> {
-                List<SysRoleMenu> list = iSysRoleMenuService.list((new LambdaQueryWrapper<SysRoleMenu>())
-                        .eq(SysRoleMenu::getRoleId,sysUserRole.getRoleId()));
-                roleMenus.addAll(list);
-            });
-            roleMenus.forEach(sysRoleMenu -> {
-                checkedKeys.add(sysRoleMenu.getMenuId());
-            });
+            List<SysRoleMenu> list = iSysRoleMenuService.list((new LambdaQueryWrapper<SysRoleMenu>()).eq(SysRoleMenu::getRoleId,roleId));
+            list.forEach(sysRoleMenu->checkedKeys.add(sysRoleMenu.getMenuId()));
         }
         TreeMenuVo vo = new TreeMenuVo();
         vo.setCheckedKeys(checkedKeys);
