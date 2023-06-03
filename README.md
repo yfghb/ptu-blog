@@ -6,10 +6,48 @@
 
 #### 软件架构
 
-springboot+Vue，前后端分离的项目
+- 后端：springboot
+- 前端：Vue
+- 数据库：mysql
+- ORM：mybatisPlus
+- 缓存：redis
+- 权限认证：springSecutity+jwt
+
+
+
+#### 页面展示
+
+**登录密码：1234**
+
+- 前台
+
+![image-20230603123012378](.\document\img\image-20230603123012378.png)
+
+![image-20230603123116576](.\document\img\image-20230603123116576.png)
+
+![image-20230603123158377](.\document\img\image-20230603123158377.png)
+
+![image-20230603123249052](.\document\img\image-20230603123249052.png)
+
+- 后台
+
+![image-20230603123420742](.\document\img\image-20230603123420742.png)
+
+![image-20230603123446333](.\document\img\image-20230603123446333.png)
+
+![image-20230603123508984](.\document\img\image-20230603123508984.png)
+
+![image-20230603123554724](.\document\img\image-20230603123554724.png)
+
+![image-20230603123621154](.\document\img\image-20230603123621154.png)
+
+![image-20230603123653775](.\document\img\image-20230603123653775.png)
+
 
 
 #### 安装教程
+
+##### windows系统
 
 - 1.使用git克隆项目或者下载压缩包
 
@@ -23,58 +61,24 @@ git clone https://gitee.com/aaabanana/ptu-blog.git
 CREATE DATABASE blog character set utf8;
 ```
 
-- 3.在项目目录/blog/src/main/resources/下，修改application.yml文件中的数据库密码
+- 3.（启动blog后端）在项目目录/blog/src/main/resources/下，修改application.yml文件中的数据库密码和文件保存路径和端口号。加载完maven配置后，先运行redis，再在项目目录/blog/src/main/java/com/my/blog下，运行BlogApplication.java
 
-```yaml
-server:
-  port: 7777
+- 4.（启动admin后端）在项目目录admin/src/main/resources/下，修改application.yml文件中的数据库密码和文件保存路径。加载完maven配置后，先运行redis，再在项目目录admin/src/main/java/com/my/blog下，运行AdminApplication.java
 
-system:
-  cross-origin: http://localhost:8080 # 前端的端口号
-
-spring:
-  datasource:
-    url: jdbc:mysql://localhost:3306/blog?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8
-    username: root
-    password: # 你的数据库密码
-  servlet:
-    multipart:
-      max-file-size: 2MB
-      max-request-size: 5MB
-  redis:
-    # 地址
-    host: localhost
-    # 端口，默认为6379
-    port: 6379
-
-mybatis-plus:
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-  global-config:
-    db-config:
-      logic-delete-field: delFlag
-      logic-delete-value: 1
-      logic-not-delete-value: 0
-      id-type: auto
-
-
-```
-
-- 4.加载完maven配置后，先运行redis，再在项目目录/blog/src/main/java/com/my/blog下，运行BlogApplication.java（启动后端）
-- 5.进入项目目录/ptu-blog-vue，输入命令
+- 5.进入项目目录/ptu-blog-vue，或者/ptu-admin-vue输入以下命令，即可启动前端
 
 ```bash
 npm install # 下载前端的依赖
 npm run dev # 运行
 ```
 
-即可启动前端
+##### linux系统
 
-#### 使用说明
+（后端）自行配置redis的地址，主机域名，端口，数据库地址，打包完使用Java -jar命令运行。
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+（前端）方法同windows
+
+
 
 #### 参与贡献
 
