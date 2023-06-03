@@ -11,7 +11,7 @@
 - 数据库：mysql
 - ORM：mybatisPlus
 - 缓存：redis
-- 权限认证：springSecutity+jwt
+- 权限认证：springSecurity+jwt
 
 
 
