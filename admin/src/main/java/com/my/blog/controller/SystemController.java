@@ -1,14 +1,10 @@
 package com.my.blog.controller;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.my.blog.domain.ResponseResult;
-import com.my.blog.domain.entity.SysRole;
-import com.my.blog.domain.entity.SysRoleMenu;
-import com.my.blog.domain.entity.SysUserRole;
-import com.my.blog.domain.entity.User;
+import com.my.blog.domain.entity.*;
 import com.my.blog.domain.vo.SysRoleVo;
 import com.my.blog.domain.vo.UserInfoVo;
 import com.my.blog.domain.vo.UserStatusVo;
@@ -277,4 +273,66 @@ public class SystemController {
         return ResponseResult.okResult(iTransactionService.updateRoleAndRoleMenu(sysRole,list));
     }
 
+    /**
+     * 查询菜单列表
+     * @param menuName 菜单名
+     * @param status 状态
+     * @return ResponseResult
+     */
+    @GetMapping("/menu/list")
+    @PreAuthorize("@permissionServiceImpl.hasPermission('system:menu:list')")
+    public ResponseResult getMenuList(String menuName,Integer status){
+        LambdaQueryWrapper<SysMenu> lqw = new LambdaQueryWrapper<>();
+        lqw.like(menuName!=null && !menuName.isEmpty(),SysMenu::getMenuName,menuName)
+           .eq(status!=null,SysMenu::getStatus,status)
+           .orderByAsc(SysMenu::getOrderNum);
+        return ResponseResult.okResult(iSysMenuService.list(lqw));
+    }
+
+    /**
+     * 新增菜单
+     * @param sysMenu SysMenu
+     * @return ResponseResult
+     */
+    @PostMapping("/menu")
+    @PreAuthorize("@permissionServiceImpl.hasPermission('system:menu:add')")
+    public ResponseResult addMenu(@RequestBody @NonNull SysMenu sysMenu){
+        return ResponseResult.okResult(iSysMenuService.save(sysMenu));
+    }
+
+    /**
+     * 以id查询菜单
+     * @param id 菜单id
+     * @return ResponseResult
+     */
+    @GetMapping("/menu/{id}")
+    @PreAuthorize("@permissionServiceImpl.hasPermission('system:menu:query')")
+    public ResponseResult getMenuById(@PathVariable @NonNull Long id){
+        return ResponseResult.okResult(iSysMenuService.getById(id));
+    }
+
+    /**
+     * 更新菜单
+     * @param sysMenu SysMenu
+     * @return ResponseResult
+     */
+    @PutMapping("/menu")
+    @PreAuthorize("@permissionServiceImpl.hasPermission('system:menu:edit')")
+    public ResponseResult updateMenuById(@RequestBody @NonNull SysMenu sysMenu){
+        if(sysMenu.getId()==null){
+            return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR,"菜单id不能为空");
+        }
+        return ResponseResult.okResult(iSysMenuService.updateById(sysMenu));
+    }
+
+    /**
+     * 删除菜单
+     * @param id 菜单id
+     * @return ResponseResult
+     */
+    @DeleteMapping("/menu/{id}")
+    @PreAuthorize("@permissionServiceImpl.hasPermission('system:menu:remove')")
+    public ResponseResult deleteMenuById(@PathVariable @NonNull Long id){
+        return ResponseResult.okResult(iSysMenuService.removeById(id));
+    }
 }
