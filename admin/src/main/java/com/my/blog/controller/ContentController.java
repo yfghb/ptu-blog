@@ -7,6 +7,7 @@ import com.my.blog.constant.DelFlag;
 import com.my.blog.domain.ResponseResult;
 import com.my.blog.domain.entity.*;
 import com.my.blog.domain.vo.*;
+import com.my.blog.enums.AppHttpCodeEnum;
 import com.my.blog.service.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.lang.NonNull;
@@ -344,4 +345,65 @@ public class ContentController {
         return ResponseResult.okResult(iTransactionService.saveArticleAndArticleTag(article,list));
     }
 
+    /**
+     * 新增友链
+     * @param link Link
+     * @return ResponseResult
+     */
+    @PostMapping("/link")
+    @PreAuthorize("@permissionServiceImpl.hasPermission('content:link:add')")
+    public ResponseResult saveLink(@RequestBody @NonNull Link link){
+        if(link.getAddress()==null || link.getAddress().isEmpty()){
+            return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR,"address不能为空");
+        }
+        return ResponseResult.okResult(iLinkService.save(link));
+    }
+
+    /**
+     * 以id查询友链
+     * @param id 友链id
+     * @return ResponseResult
+     */
+    @GetMapping("/link/{id}")
+    @PreAuthorize("@permissionServiceImpl.hasPermission('content:link:query')")
+    public ResponseResult getLinkById(@PathVariable @NonNull Long id){
+        return ResponseResult.okResult(iLinkService.getById(id));
+    }
+
+    /**
+     * 修改友链
+     * @param link Link
+     * @return ResponseResult
+     */
+    @PutMapping("/link")
+    @PreAuthorize("@permissionServiceImpl.hasPermission('content:link:edit')")
+    public ResponseResult updateLink(@RequestBody @NonNull Link link){
+        return ResponseResult.okResult(iLinkService.updateById(link));
+    }
+
+    /**
+     * 以id删除友链
+     * @param id 友链id
+     * @return ResponseResult
+     */
+    @DeleteMapping("/link/{id}")
+    @PreAuthorize("@permissionServiceImpl.hasPermission('content:link:remove')")
+    public ResponseResult deleteLinkById(@PathVariable @NonNull Long id){
+        return ResponseResult.okResult(iLinkService.removeById(id));
+    }
+
+    /**
+     * 更新友链的状态
+     * @param vo LinkVo
+     * @return ResponseResult
+     */
+    @PutMapping("/link/changeLinkStatus")
+    public ResponseResult changeLinkStatus(@RequestBody @NonNull LinkVo vo){
+        if(vo.getId()==null || vo.getStatus()==null || vo.getStatus().isEmpty()){
+            return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR,"id和状态不能为空");
+        }
+        Link link = iLinkService.getById(vo.getId());
+        link.setStatus(vo.getStatus());
+        return ResponseResult.okResult(iLinkService.updateById(link));
+    }
 }

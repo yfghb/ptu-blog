@@ -13,4 +13,5 @@ public class LinkVo {
     private String logo;
     private String description;
     private String address;
+    private String status;
 }
